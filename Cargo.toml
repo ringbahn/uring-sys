@@ -1,0 +1,16 @@
+[package]
+name = "uring-sys"
+version = "1.0.0"
+description = "liburing bindings"
+repository = "https://github.com/withoutboats/uring-sys"
+keywords = ["io_uring", "liburing"]
+license = "MIT OR Apache-2.0"
+authors = ["Without Boats <boats@mozilla.com>"]
+edition = "2018"
+links = "uring"
+
+[dependencies]
+libc = "0.2.65"
+
+[build-dependencies]
+cc = "1.0.46"
