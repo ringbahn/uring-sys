@@ -15,7 +15,7 @@ fn main() {
                 .include(liburing.join("include"))
                 .compile("uring");
 
-    // iouc (our additional, linkable C bindings)
+    // (our additional, linkable C bindings)
     Build::new().file(project.join("rusturing.c")).include(liburing.join("include"))
                 .compile("rusturing");
 }
