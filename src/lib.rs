@@ -1,5 +1,15 @@
 pub const LIBURING_UDATA_TIMEOUT: libc::__u64 = libc::__u64::max_value();
 
+// sqe opcode constants
+pub const IORING_OP_NOP:            u8  = 0;
+pub const IORING_OP_READV:          u8  = 1;
+pub const IORING_OP_WRITEV:         u8  = 2;
+pub const IORING_OP_FSYNC:          u8  = 3;
+pub const IORING_OP_READ_FIXED:     u8  = 4;
+pub const IORING_OP_WRITE_FIXED:    u8  = 5;
+pub const IORING_OP_TIMEOUT:        u8  = 11;
+
+
 #[repr(C)]
 pub struct io_uring {
     pub sq: io_uring_sq,
