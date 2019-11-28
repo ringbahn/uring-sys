@@ -1,5 +1,13 @@
 pub const LIBURING_UDATA_TIMEOUT: libc::__u64 = libc::__u64::max_value();
 
+// syscall constants
+#[allow(non_upper_case_globals)]
+pub const __NR_io_uring_setup: libc::c_int = 425;
+#[allow(non_upper_case_globals)]
+pub const __NR_io_uring_enter: libc::c_int = 426;
+#[allow(non_upper_case_globals)]
+pub const __NR_io_uring_register: libc::c_int = 427;
+
 #[repr(C)]
 pub struct io_uring {
     pub sq: io_uring_sq,
@@ -129,6 +137,43 @@ pub struct __kernel_timespec {
     pub tv_sec: i64,
     pub tv_nsec: libc::c_longlong,
 }
+
+pub unsafe fn io_uring_register(fd: libc::c_int, opcode: libc::c_int, arg: *const libc::c_void, nr_args: libc::c_uint)
+                                -> libc::c_int
+{
+    libc::syscall(
+        __NR_io_uring_register as libc::c_long,
+        fd as libc::c_long,
+        opcode as libc::c_long,
+        arg as libc::c_long,
+        nr_args as libc::c_long
+    ) as _
+}
+
+pub unsafe fn io_uring_setup(entries: libc::c_uint, p: *mut io_uring_params)
+                             -> libc::c_int
+{
+    libc::syscall(
+        __NR_io_uring_setup as libc::c_long,
+        entries as libc::c_long,
+        p as libc::c_long
+    ) as _
+}
+
+pub unsafe fn io_uring_enter(fd: libc::c_int, to_submit: libc::c_uint, min_complete: libc::c_uint, flags: libc::c_uint, sig: *const libc::sigset_t)
+                             -> libc::c_int
+{
+    libc::syscall(
+        __NR_io_uring_enter as libc::c_long,
+        fd,
+        to_submit,
+        min_complete,
+        flags,
+        sig,
+        core::mem::size_of::<libc::sigset_t>() as libc::c_long
+    ) as _
+}
+
 
 #[link(name = "uring")]
 extern {
