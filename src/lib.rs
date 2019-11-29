@@ -1,12 +1,24 @@
 pub const LIBURING_UDATA_TIMEOUT: libc::__u64 = libc::__u64::max_value();
 
-// syscall constants
-#[allow(non_upper_case_globals)]
-pub const __NR_io_uring_setup: libc::c_int = 425;
-#[allow(non_upper_case_globals)]
-pub const __NR_io_uring_enter: libc::c_int = 426;
-#[allow(non_upper_case_globals)]
-pub const __NR_io_uring_register: libc::c_int = 427;
+// sqe opcode constants
+pub const IORING_OP_NOP:                u8 = 0;
+pub const IORING_OP_READV:              u8 = 1;
+pub const IORING_OP_WRITEV:             u8 = 2;
+pub const IORING_OP_FSYNC:              u8 = 3;
+pub const IORING_OP_READ_FIXED:         u8 = 4;
+pub const IORING_OP_WRITE_FIXED:        u8 = 5;
+pub const IORING_OP_POLL_ADD:           u8 = 6;
+pub const IORING_OP_POLL_REMOVE:        u8 = 7;
+pub const IORING_OP_SYNC_FILE_RANGE:    u8 = 8;
+pub const IORING_OP_SENDMSG:            u8 = 9;
+pub const IORING_OP_RECVMSG:            u8 = 10;
+pub const IORING_OP_TIMEOUT:            u8 = 11;
+pub const IORING_OP_TIMEOUT_REMOVE:     u8 = 12;
+pub const IORING_OP_ACCEPT:             u8 = 13;
+pub const IORING_OP_ASYNC_CANCEL:       u8 = 14;
+pub const IORING_OP_LINK_TIMEOUT:       u8 = 15;
+pub const IORING_OP_CONNECT:            u8 = 16;
+
 
 #[repr(C)]
 pub struct io_uring {
