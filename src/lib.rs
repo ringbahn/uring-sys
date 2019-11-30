@@ -154,8 +154,8 @@ pub struct __kernel_timespec {
 extern {
     // system calls
     pub fn io_uring_setup(entries: libc::c_uint, p: *mut io_uring_params) -> libc::c_int;
-    pub fn io_uring_enter(fd: libc::c_uint, to_submit: libc::c_uint, min_complete: libc::c_uint, flags: libc::c_uint, sig: *const libc::sigset_t);
-    pub fn io_uring_register(fd: libc::c_uint, opcode: libc::c_uint, arg: *const libc::c_void, nr_args: libc::c_uint);
+    pub fn io_uring_enter(fd: libc::c_uint, to_submit: libc::c_uint, min_complete: libc::c_uint, flags: libc::c_uint, sig: *const libc::sigset_t) -> libc::c_int;
+    pub fn io_uring_register(fd: libc::c_uint, opcode: libc::c_uint, arg: *const libc::c_void, nr_args: libc::c_uint) -> libc::c_int;
 
     // library interface
     pub fn io_uring_queue_init(
