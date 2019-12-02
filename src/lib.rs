@@ -228,5 +228,166 @@ extern {
 
 #[link(name = "rusturing")]
 extern {
-    pub fn rust_io_uring_cq_advance(ring: *mut io_uring, nr: libc::c_uint);
+    #[link_name = "rust_io_uring_cq_advance"]
+    pub fn io_uring_cq_advance(ring: *mut io_uring, nr: libc::c_uint);
+
+    #[link_name = "rust_io_uring_cqe_seen"]
+    pub fn io_uring_cqe_seen(ring: *mut io_uring, cqe: *mut io_uring_cqe);
+
+    #[link_name = "rust_io_uring_sqe_set_data"]
+    pub fn io_uring_sqe_set_data(sqe: *mut io_uring_sqe, data: *mut libc::c_void);
+
+    #[link_name = "rust_io_uring_cqe_get_data"]
+    pub fn io_uring_cqe_get_data(cqe: *mut io_uring_cqe) -> *mut libc::c_void;
+
+    #[link_name = "rust_io_uring_sqe_set_flags"]
+    pub fn io_uring_sqe_set_flags(sqe: *mut io_uring_sqe, flags: libc::c_uint);
+
+    #[link_name = "rust_io_uring_prep_rw"]
+    pub fn io_uring_prep_rw(
+        op: libc::c_int,
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        addr: *const libc::c_void,
+        len: libc::c_uint,
+        offset: libc::off_t,
+    );
+
+    #[link_name = "rust_io_uring_prep_readv"]
+    pub fn io_uring_prep_readv(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        iovecs: *const libc::iovec,
+        nr_vecs: libc::c_uint,
+        offset: libc::off_t,
+    );
+
+    #[link_name = "rust_io_uring_prep_read_fixed"]
+    pub fn io_uring_prep_read_fixed(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        buf: *mut libc::c_void,
+        nbytes: libc::c_uint,
+        offset: libc::off_t,
+        buf_index: libc::c_int,
+    );
+
+    #[link_name = "rust_io_uring_prep_writev"]
+    pub fn io_uring_prep_writev(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        iovecs: *const libc::iovec,
+        nr_vecs: libc::c_uint,
+        offset: libc::off_t,
+    );
+
+    #[link_name = "rust_io_uring_prep_write_fixed"]
+    pub fn io_uring_prep_write_fixed(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        buf: *const libc::c_void,
+        nbytes: libc::c_uint,
+        offset: libc::off_t,
+        buf_index: libc::c_int,
+    );
+
+    #[link_name = "rust_io_uring_prep_recvmsg"]
+    pub fn io_uring_prep_recvmsg(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        msg: *mut libc::msghdr,
+        flags: libc::c_uint,
+    );
+
+    #[link_name = "rust_io_uring_prep_sendmsg"]
+    pub fn io_uring_prep_sendmsg(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        msg: *const libc::msghdr,
+        flags: libc::c_uint,
+    );
+
+    #[link_name = "rust_io_uring_prep_poll_add"]
+    pub fn io_uring_prep_poll_add(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        poll_mask: libc::c_short,
+    );
+
+    #[link_name = "rust_io_uring_prep_poll_remove"]
+    pub fn io_uring_prep_poll_remove(sqe: *mut io_uring_sqe, user_data: *mut libc::c_void);
+
+    #[link_name = "rust_io_uring_prep_fsync"]
+    pub fn io_uring_prep_fsync(sqe: *mut io_uring_sqe, fd: libc::c_int, fsync_flags: libc::c_uint);
+
+    #[link_name = "rust_io_uring_prep_nop"]
+    pub fn io_uring_prep_nop(sqe: *mut io_uring_sqe);
+
+    #[link_name = "rust_io_uring_prep_timeout"]
+    pub fn io_uring_prep_timeout(
+        sqe: *mut io_uring_sqe,
+        ts: *mut __kernel_timespec,
+        count: libc::c_uint,
+        flags: libc::c_uint,
+    );
+
+    #[link_name = "rust_io_uring_prep_timeout_remove"]
+    pub fn io_uring_prep_timeout_remove(
+        sqe: *mut io_uring_sqe,
+        user_data: libc::__u64,
+        flags: libc::c_uint,
+    );
+
+    #[link_name = "rust_io_uring_prep_accept"]
+    pub fn io_uring_prep_accept(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        addr: *mut libc::sockaddr,
+        addrlen: *mut libc::socklen_t,
+        flags: libc::c_int,
+    );
+
+    #[link_name = "rust_io_uring_prep_cancel"]
+    pub fn io_uring_prep_cancel(
+        sqe: *mut io_uring_sqe,
+        user_data: *mut libc::c_void,
+        flags: libc::c_int,
+    );
+
+    #[link_name = "rust_io_uring_prep_link_timeout"]
+    pub fn io_uring_prep_link_timeout(
+        sqe: *mut io_uring_sqe,
+        ts: *mut __kernel_timespec,
+        flags: libc::c_uint,
+    );
+
+    #[link_name = "rust_io_uring_prep_connect"]
+    pub fn io_uring_prep_connect(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        addr: *mut libc::sockaddr,
+        addrlen: libc::socklen_t,
+    );
+
+    #[link_name = "rust_io_uring_sq_ready"]
+    pub fn io_uring_sq_ready(ring: *mut io_uring) -> libc::c_uint;
+
+    #[link_name = "rust_io_uring_sq_space_left"]
+    pub fn io_uring_sq_space_left(ring: *mut io_uring) -> libc::c_uint;
+
+    #[link_name = "rust_io_uring_cq_ready"]
+    pub fn io_uring_cq_ready(ring: *mut io_uring) -> libc::c_uint;
+
+    #[link_name = "rust_io_uring_wait_cqe_nr"]
+    pub fn io_uring_wait_cqe_nr(
+        ring: *mut io_uring,
+        cqe_ptr: *mut *mut io_uring_cqe,
+        wait_nr: libc::c_uint,
+    ) -> libc::c_int;
+
+    #[link_name = "rust_io_uring_peek_cqe"]
+    pub fn io_uring_peek_cqe(ring: *mut io_uring, cqe_ptr: *mut *mut io_uring_cqe) -> libc::c_int;
+
+    #[link_name = "rust_io_uring_wait_cqe"]
+    pub fn io_uring_wait_cqe(ring: *mut io_uring, cqe_ptr: *mut *mut io_uring_cqe) -> libc::c_int;
 }
