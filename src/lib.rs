@@ -21,6 +21,48 @@ pub const IORING_OP_ASYNC_CANCEL:       u8 = 14;
 pub const IORING_OP_LINK_TIMEOUT:       u8 = 15;
 pub const IORING_OP_CONNECT:            u8 = 16;
 
+// sqe.flags
+pub const  IOSQE_FIXED_FILE:            u8 = 1 << 0;	/* use fixed fileset */
+pub const  IOSQE_IO_DRAIN:              u8 = 1 << 1;	/* issue after inflight IO */
+pub const  IOSQE_IO_LINK:               u8 = 1 << 2;	/* links next sqe */
+
+// sqe.cmd_flags.fsync_flags
+pub const IORING_FSYNC_DATASYNC:        u8 = 1 << 0;
+
+// sqe.cmd_flags.timeout_flags
+pub const IORING_TIMEOUT_ABS:           u8 = 1 << 0;
+
+// io_uring_setup flags
+pub const IORING_SETUP_IOPOLL:	        u8 = 1 << 0;	/* io_context is polled */
+pub const IORING_SETUP_SQPOLL:	        u8 = 1 << 1;	/* SQ poll thread */
+pub const IORING_SETUP_SQ_AFF:	        u8 = 1 << 2;	/* sq_thread_cpu is valid */
+pub const IORING_SETUP_CQSIZE:	        u8 = 1 << 3;    /* app defines CQ size */
+
+// Magic offsets for the application to mmap the data it needs
+pub const IORING_OFF_SQ_RING:           u64 = 0;
+pub const IORING_OFF_CQ_RING:           u64 = 0x8000000;
+pub const IORING_OFF_SQES:              u64 = 0x10000000;
+
+// sq_ring.kflags
+pub const IORING_SQ_NEED_WAKEUP:        u8 = 1 << 0;
+
+// io_uring_enter flags
+pub const IORING_ENTER_GETEVENTS:       u8 = 1 << 0;
+pub const IORING_ENTER_SQ_WAKEUP:       u8 = 1 << 1;
+
+// io_uring_params.features flags
+pub const IORING_FEAT_SINGLE_MMAP:      u8 = 1 << 0;
+pub const IORING_FEAT_NODROP:           u8 = 1 << 1;
+
+
+// io_uring_register opcodes and arguments
+pub const IORING_REGISTER_BUFFERS:      u8 = 0;
+pub const IORING_UNREGISTER_BUFFERS:    u8 = 1;
+pub const IORING_REGISTER_FILES:        u8 = 2;
+pub const IORING_UNREGISTER_FILES:      u8 = 3;
+pub const IORING_REGISTER_EVENTFD:      u8 = 4;
+pub const IORING_UNREGISTER_EVENTFD:    u8 = 5;
+pub const IORING_REGISTER_FILES_UPDATE: u8 = 6;
 
 #[repr(C)]
 pub struct io_uring {
