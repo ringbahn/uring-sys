@@ -1,3 +1,5 @@
+pub mod syscalls;
+
 pub const LIBURING_UDATA_TIMEOUT: libc::__u64 = libc::__u64::max_value();
 
 // sqe opcode constants
@@ -144,6 +146,7 @@ pub struct io_cqring_offsets {
     pub resv: [libc::__u64; 2],
 }
 
+
 #[repr(C)]
 pub struct __kernel_timespec {
     pub tv_sec: i64,
@@ -152,12 +155,6 @@ pub struct __kernel_timespec {
 
 #[link(name = "uring")]
 extern {
-    // system calls
-    pub fn io_uring_setup(entries: libc::c_uint, p: *mut io_uring_params) -> libc::c_int;
-    pub fn io_uring_enter(fd: libc::c_uint, to_submit: libc::c_uint, min_complete: libc::c_uint, flags: libc::c_uint, sig: *const libc::sigset_t) -> libc::c_int;
-    pub fn io_uring_register(fd: libc::c_uint, opcode: libc::c_uint, arg: *const libc::c_void, nr_args: libc::c_uint) -> libc::c_int;
-
-    // library interface
     pub fn io_uring_queue_init(
         entries: libc::c_uint,
         ring: *mut io_uring,
