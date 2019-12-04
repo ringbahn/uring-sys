@@ -1,6 +1,6 @@
 [package]
 name = "uring-sys"
-version = "1.0.0-alpha"
+version = "1.0.0-beta"
 description = "liburing bindings"
 repository = "https://github.com/withoutboats/uring-sys"
 keywords = ["io_uring", "liburing"]
