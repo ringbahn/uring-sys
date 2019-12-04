@@ -3,24 +3,66 @@ pub mod syscalls;
 pub const LIBURING_UDATA_TIMEOUT: libc::__u64 = libc::__u64::max_value();
 
 // sqe opcode constants
-pub const IORING_OP_NOP:                u8 = 0;
-pub const IORING_OP_READV:              u8 = 1;
-pub const IORING_OP_WRITEV:             u8 = 2;
-pub const IORING_OP_FSYNC:              u8 = 3;
-pub const IORING_OP_READ_FIXED:         u8 = 4;
-pub const IORING_OP_WRITE_FIXED:        u8 = 5;
-pub const IORING_OP_POLL_ADD:           u8 = 6;
-pub const IORING_OP_POLL_REMOVE:        u8 = 7;
-pub const IORING_OP_SYNC_FILE_RANGE:    u8 = 8;
-pub const IORING_OP_SENDMSG:            u8 = 9;
-pub const IORING_OP_RECVMSG:            u8 = 10;
-pub const IORING_OP_TIMEOUT:            u8 = 11;
-pub const IORING_OP_TIMEOUT_REMOVE:     u8 = 12;
-pub const IORING_OP_ACCEPT:             u8 = 13;
-pub const IORING_OP_ASYNC_CANCEL:       u8 = 14;
-pub const IORING_OP_LINK_TIMEOUT:       u8 = 15;
-pub const IORING_OP_CONNECT:            u8 = 16;
+pub const IORING_OP_NOP:                libc::__u8 = 0;
+pub const IORING_OP_READV:              libc::__u8 = 1;
+pub const IORING_OP_WRITEV:             libc::__u8 = 2;
+pub const IORING_OP_FSYNC:              libc::__u8 = 3;
+pub const IORING_OP_READ_FIXED:         libc::__u8 = 4;
+pub const IORING_OP_WRITE_FIXED:        libc::__u8 = 5;
+pub const IORING_OP_POLL_ADD:           libc::__u8 = 6;
+pub const IORING_OP_POLL_REMOVE:        libc::__u8 = 7;
+pub const IORING_OP_SYNC_FILE_RANGE:    libc::__u8 = 8;
+pub const IORING_OP_SENDMSG:            libc::__u8 = 9;
+pub const IORING_OP_RECVMSG:            libc::__u8 = 10;
+pub const IORING_OP_TIMEOUT:            libc::__u8 = 11;
+pub const IORING_OP_TIMEOUT_REMOVE:     libc::__u8 = 12;
+pub const IORING_OP_ACCEPT:             libc::__u8 = 13;
+pub const IORING_OP_ASYNC_CANCEL:       libc::__u8 = 14;
+pub const IORING_OP_LINK_TIMEOUT:       libc::__u8 = 15;
+pub const IORING_OP_CONNECT:            libc::__u8 = 16;
 
+// sqe.flags
+pub const  IOSQE_FIXED_FILE:            libc::__u8 = 1 << 0;	/* use fixed fileset */
+pub const  IOSQE_IO_DRAIN:              libc::__u8 = 1 << 1;	/* issue after inflight IO */
+pub const  IOSQE_IO_LINK:               libc::__u8 = 1 << 2;	/* links next sqe */
+
+// sqe.cmd_flags.fsync_flags
+pub const IORING_FSYNC_DATASYNC:        libc::__u32 = 1 << 0;
+
+// sqe.cmd_flags.timeout_flags
+pub const IORING_TIMEOUT_ABS:           libc::__u32 = 1 << 0;
+
+// io_uring_setup flags
+pub const IORING_SETUP_IOPOLL:	        libc::c_uint = 1 << 0;	/* io_context is polled */
+pub const IORING_SETUP_SQPOLL:	        libc::c_uint = 1 << 1;	/* SQ poll thread */
+pub const IORING_SETUP_SQ_AFF:	        libc::c_uint = 1 << 2;	/* sq_thread_cpu is valid */
+pub const IORING_SETUP_CQSIZE:	        libc::c_uint = 1 << 3;    /* app defines CQ size */
+
+// Magic offsets for the application to mmap the data it needs
+pub const IORING_OFF_SQ_RING:           libc::__u64 = 0;
+pub const IORING_OFF_CQ_RING:           libc::__u64 = 0x8000000;
+pub const IORING_OFF_SQES:              libc::__u64 = 0x10000000;
+
+// sq_ring.kflags
+pub const IORING_SQ_NEED_WAKEUP:        libc::c_uint = 1 << 0;
+
+// io_uring_enter flags
+pub const IORING_ENTER_GETEVENTS:       libc::c_uint = 1 << 0;
+pub const IORING_ENTER_SQ_WAKEUP:       libc::c_uint = 1 << 1;
+
+// io_uring_params.features flags
+pub const IORING_FEAT_SINGLE_MMAP:      libc::__u32 = 1 << 0;
+pub const IORING_FEAT_NODROP:           libc::__u32 = 1 << 1;
+
+
+// io_uring_register opcodes and arguments
+pub const IORING_REGISTER_BUFFERS:      libc::c_uint = 0;
+pub const IORING_UNREGISTER_BUFFERS:    libc::c_uint = 1;
+pub const IORING_REGISTER_FILES:        libc::c_uint = 2;
+pub const IORING_UNREGISTER_FILES:      libc::c_uint = 3;
+pub const IORING_REGISTER_EVENTFD:      libc::c_uint = 4;
+pub const IORING_UNREGISTER_EVENTFD:    libc::c_uint = 5;
+pub const IORING_REGISTER_FILES_UPDATE: libc::c_uint = 6;
 
 #[repr(C)]
 pub struct io_uring {
