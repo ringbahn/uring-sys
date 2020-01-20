@@ -3,28 +3,40 @@ pub mod syscalls;
 pub const LIBURING_UDATA_TIMEOUT: libc::__u64 = libc::__u64::max_value();
 
 // sqe opcode constants
-pub const IORING_OP_NOP:                libc::__u8 = 0;
-pub const IORING_OP_READV:              libc::__u8 = 1;
-pub const IORING_OP_WRITEV:             libc::__u8 = 2;
-pub const IORING_OP_FSYNC:              libc::__u8 = 3;
-pub const IORING_OP_READ_FIXED:         libc::__u8 = 4;
-pub const IORING_OP_WRITE_FIXED:        libc::__u8 = 5;
-pub const IORING_OP_POLL_ADD:           libc::__u8 = 6;
-pub const IORING_OP_POLL_REMOVE:        libc::__u8 = 7;
-pub const IORING_OP_SYNC_FILE_RANGE:    libc::__u8 = 8;
-pub const IORING_OP_SENDMSG:            libc::__u8 = 9;
-pub const IORING_OP_RECVMSG:            libc::__u8 = 10;
-pub const IORING_OP_TIMEOUT:            libc::__u8 = 11;
-pub const IORING_OP_TIMEOUT_REMOVE:     libc::__u8 = 12;
-pub const IORING_OP_ACCEPT:             libc::__u8 = 13;
-pub const IORING_OP_ASYNC_CANCEL:       libc::__u8 = 14;
-pub const IORING_OP_LINK_TIMEOUT:       libc::__u8 = 15;
-pub const IORING_OP_CONNECT:            libc::__u8 = 16;
+#[repr(C)]
+#[non_exhaustive]
+#[allow(nonstandard_style)]
+pub enum IoRingOp {
+    IORING_OP_NOP,
+    IORING_OP_READV,
+    IORING_OP_WRITEV,
+    IORING_OP_FSYNC,
+    IORING_OP_READ_FIXED,
+    IORING_OP_WRITE_FIXED,
+    IORING_OP_POLL_ADD,
+    IORING_OP_POLL_REMOVE,
+    IORING_OP_SYNC_FILE_RANGE,
+    IORING_OP_SENDMSG,
+    IORING_OP_RECVMSG,
+    IORING_OP_TIMEOUT,
+    IORING_OP_TIMEOUT_REMOVE,
+    IORING_OP_ACCEPT,
+    IORING_OP_ASYNC_CANCEL,
+    IORING_OP_LINK_TIMEOUT,
+    IORING_OP_CONNECT,
+    IORING_OP_FALLOCATE,
+    IORING_OP_OPENAT,
+    IORING_OP_CLOSE,
+    IORING_OP_FILES_UPDATE,
+    IORING_OP_STATX,
+}
 
 // sqe.flags
-pub const  IOSQE_FIXED_FILE:            libc::__u8 = 1 << 0;	/* use fixed fileset */
-pub const  IOSQE_IO_DRAIN:              libc::__u8 = 1 << 1;	/* issue after inflight IO */
-pub const  IOSQE_IO_LINK:               libc::__u8 = 1 << 2;	/* links next sqe */
+pub const IOSQE_FIXED_FILE:             libc::__u8 = 1 << 0;	/* use fixed fileset */
+pub const IOSQE_IO_DRAIN:               libc::__u8 = 1 << 1;	/* issue after inflight IO */
+pub const IOSQE_IO_LINK:                libc::__u8 = 1 << 2;	/* links next sqe */
+pub const IOSQE_IO_HARDLINK:            libc::__u8 = 1 << 3;	/* like LINK, but stronger */
+pub const IOSQE_ASYNC:                  libc::__u8 = 1 << 4;    /* always go async */
 
 // sqe.cmd_flags.fsync_flags
 pub const IORING_FSYNC_DATASYNC:        libc::__u32 = 1 << 0;
@@ -53,7 +65,7 @@ pub const IORING_ENTER_SQ_WAKEUP:       libc::c_uint = 1 << 1;
 // io_uring_params.features flags
 pub const IORING_FEAT_SINGLE_MMAP:      libc::__u32 = 1 << 0;
 pub const IORING_FEAT_NODROP:           libc::__u32 = 1 << 1;
-
+pub const IORING_FEAT_SUBMIT_STABLE:    libc::__u32 = 1 << 2;
 
 // io_uring_register opcodes and arguments
 pub const IORING_REGISTER_BUFFERS:      libc::c_uint = 0;
@@ -120,6 +132,8 @@ pub union cmd_flags {
     pub timeout_flags: libc::__u32,
     pub accept_flags: libc::__u32,
     pub cancel_flags: libc::__u32,
+    pub open_flags: libc::__u32,
+    pub statx_flags: libc::__u32,
 }
 
 #[allow(non_camel_case_types)]
@@ -295,7 +309,7 @@ extern {
         fd: libc::c_int,
         addr: *const libc::c_void,
         len: libc::c_uint,
-        offset: libc::off_t,
+        offset: libc::__u64,
     );
 
     #[link_name = "rust_io_uring_prep_readv"]
@@ -412,6 +426,44 @@ extern {
         fd: libc::c_int,
         addr: *mut libc::sockaddr,
         addrlen: libc::socklen_t,
+    );
+
+    #[link_name = "rust_io_uring_prep_files_update"]
+    pub fn io_uring_prep_files_update(
+        sqe: *mut io_uring_sqe,
+        fds: *mut libc::c_int,
+        nr_fds: libc::c_uint
+    );
+
+    #[link_name = "rust_io_uring_prep_fallocate"]
+    pub fn io_uring_prep_fallocate(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        mode: libc::c_int,
+        offset: libc::off_t,
+        len: libc::off_t,
+    );
+
+    #[link_name = "rust_io_uring_prep_openat"]
+    pub fn io_uring_prep_openat(
+        sqe: *mut io_uring_sqe,
+        dfd: libc::c_int,
+        path: *const libc::c_char,
+        flags: libc::c_int,
+        mode: libc::mode_t,
+    );
+
+    #[link_name = "rust_io_uring_prep_close"]
+    pub fn io_uring_prep_close(sqe: *mut io_uring_sqe, fd: libc::c_int);
+
+    #[link_name = "rust_io_uring_prep_statx"]
+    pub fn io_uring_prep_statx(
+        sqe: *mut io_uring_sqe,
+        dfd: libc::c_int,
+        path: *const libc::c_char,
+        flags: libc::c_int,
+        mask: libc::c_uint,
+        statx: *mut libc::statx,
     );
 
     #[link_name = "rust_io_uring_sq_ready"]
