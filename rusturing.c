@@ -30,7 +30,7 @@ extern inline void rust_io_uring_prep_rw(int op,
                                          int fd,
                                          const void *addr,
                                          unsigned len,
-                                         off_t offset)
+                                         __u64 offset)
 {
     io_uring_prep_rw(op, sqe, fd, addr, len, offset);
 }
@@ -153,6 +153,45 @@ extern inline void rust_io_uring_prep_connect(struct io_uring_sqe *sqe,
                                               socklen_t addrlen)
 {
     io_uring_prep_connect(sqe, fd, addr, addrlen);
+}
+
+extern inline void rust_io_uring_prep_files_update(struct io_uring_sqe *sqe,
+                                                   int *fds,
+                                                   unsigned nr_fds)
+{
+    io_uring_prep_files_update(sqe, fds, nr_fds);
+}
+
+extern inline void rust_io_uring_prep_fallocate(struct io_uring_sqe *sqe,
+                                                int fd,
+                                                int mode,
+                                                off_t offset,
+                                                off_t len)
+{
+    io_uring_prep_fallocate(sqe, fd, mode, offset, len);
+}
+
+extern inline void rust_io_uring_prep_openat(struct io_uring_sqe *sqe,
+                                             int dfd,
+                                             const char *path,
+                                             int flags,
+                                             mode_t mode)
+{
+    io_uring_prep_openat(sqe, dfd, path, flags, mode);
+}
+
+extern inline void rust_io_uring_prep_close(struct io_uring_sqe *sqe, int fd) {
+    io_uring_prep_close(sqe, fd);
+}
+
+extern inline void rust_io_uring_prep_statx(struct io_uring_sqe *sqe,
+                                            int dfd,
+                                            const char *path,
+                                            int flags,
+                                            unsigned mask,
+                                            struct statx *statxbuf)
+{
+    io_uring_prep_statx(sqe, dfd, path, flags, mask, statxbuf);
 }
 
 extern inline unsigned rust_io_uring_sq_ready(struct io_uring *ring)
