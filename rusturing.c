@@ -157,9 +157,10 @@ extern inline void rust_io_uring_prep_connect(struct io_uring_sqe *sqe,
 
 extern inline void rust_io_uring_prep_files_update(struct io_uring_sqe *sqe,
                                                    int *fds,
-                                                   unsigned nr_fds)
+                                                   unsigned nr_fds,
+                                                   int offset)
 {
-    io_uring_prep_files_update(sqe, fds, nr_fds);
+    io_uring_prep_files_update(sqe, fds, nr_fds, offset);
 }
 
 extern inline void rust_io_uring_prep_fallocate(struct io_uring_sqe *sqe,
