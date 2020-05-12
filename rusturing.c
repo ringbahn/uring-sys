@@ -35,6 +35,15 @@ extern inline void rust_io_uring_prep_rw(int op,
     io_uring_prep_rw(op, sqe, fd, addr, len, offset);
 }
 
+extern inline void rust_io_uring_prep_splice(struct io_uring_sqe *sqe,
+					int fd_in, loff_t off_in,
+					int fd_out, loff_t off_out,
+					unsigned int nbytes,
+					unsigned int splice_flags)
+{
+    io_uring_prep_splice(sqe, fd_in, fd_out, off_in, off_out, nbytes, splice_flags);
+}
+
 extern inline void rust_io_uring_prep_readv(struct io_uring_sqe *sqe,
                                             int fd,
                                             const struct iovec *iovecs,
@@ -185,6 +194,18 @@ extern inline void rust_io_uring_prep_close(struct io_uring_sqe *sqe, int fd) {
     io_uring_prep_close(sqe, fd);
 }
 
+extern inline void rust_io_uring_prep_read(struct io_uring_sqe *sqe, int fd,
+				      void *buf, unsigned nbytes, off_t offset)
+{
+    io_uring_prep_read(sqe, fd, buf, nbytes, offset);
+}
+
+extern inline void rust_io_uring_prep_write(struct io_uring_sqe *sqe, int fd,
+				       const void *buf, unsigned nbytes, off_t offset)
+{
+	io_uring_prep_write(sqe, fd, buf, nbytes, offset);
+}
+
 extern inline void rust_io_uring_prep_statx(struct io_uring_sqe *sqe,
                                             int dfd,
                                             const char *path,
@@ -193,6 +214,56 @@ extern inline void rust_io_uring_prep_statx(struct io_uring_sqe *sqe,
                                             struct statx *statxbuf)
 {
     io_uring_prep_statx(sqe, dfd, path, flags, mask, statxbuf);
+}
+
+extern inline void rust_io_uring_prep_fadvise(struct io_uring_sqe *sqe, int fd,
+					 off_t offset, off_t len, int advice)
+{
+    io_uring_prep_fadvise(sqe, fd, offset, len, advice);
+}
+
+extern inline void rust_io_uring_prep_madvise(struct io_uring_sqe *sqe, void *addr,
+					 off_t length, int advice)
+{
+    io_uring_prep_madvise(sqe, addr, length, advice);
+}
+
+extern inline void rust_io_uring_prep_send(struct io_uring_sqe *sqe, int sockfd,
+				      const void *buf, size_t len, int flags)
+{
+    io_uring_prep_send(sqe, sockfd, buf, len, flags);
+}
+
+extern inline void rust_io_uring_prep_recv(struct io_uring_sqe *sqe, int sockfd,
+				      void *buf, size_t len, int flags)
+{
+    io_uring_prep_recv(sqe, sockfd, buf, len, flags);
+}
+
+extern inline void rust_io_uring_prep_openat2(struct io_uring_sqe *sqe, int dfd,
+					const char *path, struct open_how *how)
+{
+    io_uring_prep_openat2(sqe, dfd, path, how);
+}
+
+extern inline void rust_io_uring_prep_epoll_ctl(struct io_uring_sqe *sqe, int epfd,
+					   int fd, int op,
+					   struct epoll_event *ev)
+{
+    io_uring_prep_epoll_ctl(sqe, epfd, fd, op, ev);
+}
+
+extern inline void rust_io_uring_prep_provide_buffers(struct io_uring_sqe *sqe,
+						 void *addr, int len, int nr,
+						 int bgid, int bid)
+{
+    io_uring_prep_provide_buffers(sqe, addr, len, nr, bgid, bid);
+}
+
+extern inline void rust_io_uring_prep_remove_buffers(struct io_uring_sqe *sqe,
+						int nr, int bgid)
+{
+    io_uring_prep_remove_buffers(sqe, nr, bgid);
 }
 
 extern inline unsigned rust_io_uring_sq_ready(struct io_uring *ring)
