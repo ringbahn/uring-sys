@@ -432,7 +432,8 @@ extern {
     pub fn io_uring_prep_files_update(
         sqe: *mut io_uring_sqe,
         fds: *mut libc::c_int,
-        nr_fds: libc::c_uint
+        nr_fds: libc::c_uint,
+        offset: libc::c_int,
     );
 
     #[link_name = "rust_io_uring_prep_fallocate"]
