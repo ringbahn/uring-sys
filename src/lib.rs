@@ -29,14 +29,26 @@ pub enum IoRingOp {
     IORING_OP_CLOSE,
     IORING_OP_FILES_UPDATE,
     IORING_OP_STATX,
+    IORING_OP_READ,
+    IORING_OP_WRITE,
+    IORING_OP_FADVISE,
+    IORING_OP_MADVISE,
+    IORING_OP_SEND,
+    IORING_OP_RECV,
+    IORING_OP_OPENAT2,
+    IORING_OP_EPOLL_CTL,
+    IORING_OP_SPLICE,
+    IORING_OP_PROVIDE_BUFFERS,
+    IORING_OP_REMOVE_BUFFERS,
 }
 
 // sqe.flags
-pub const IOSQE_FIXED_FILE:             libc::__u8 = 1 << 0;	/* use fixed fileset */
-pub const IOSQE_IO_DRAIN:               libc::__u8 = 1 << 1;	/* issue after inflight IO */
-pub const IOSQE_IO_LINK:                libc::__u8 = 1 << 2;	/* links next sqe */
-pub const IOSQE_IO_HARDLINK:            libc::__u8 = 1 << 3;	/* like LINK, but stronger */
-pub const IOSQE_ASYNC:                  libc::__u8 = 1 << 4;    /* always go async */
+pub const IOSQE_FIXED_FILE:             libc::__u8 = 1 << 0; /* use fixed fileset */
+pub const IOSQE_IO_DRAIN:               libc::__u8 = 1 << 1; /* issue after inflight IO */
+pub const IOSQE_IO_LINK:                libc::__u8 = 1 << 2; /* links next sqe */
+pub const IOSQE_IO_HARDLINK:            libc::__u8 = 1 << 3; /* like LINK, but stronger */
+pub const IOSQE_ASYNC:                  libc::__u8 = 1 << 4; /* always go async */
+pub const IOSQE_BUFFER_SELECT:          libc::__u8 = 1 << 5; /* select buf from sqe->buf_group */
 
 // sqe.cmd_flags.fsync_flags
 pub const IORING_FSYNC_DATASYNC:        libc::__u32 = 1 << 0;
@@ -44,11 +56,19 @@ pub const IORING_FSYNC_DATASYNC:        libc::__u32 = 1 << 0;
 // sqe.cmd_flags.timeout_flags
 pub const IORING_TIMEOUT_ABS:           libc::__u32 = 1 << 0;
 
+// sqe.cmd_flags.splice_flags
+pub const SPLICE_F_FD_IN_FXIED:         libc::__u32 = 1 << 31;
+
 // io_uring_setup flags
-pub const IORING_SETUP_IOPOLL:	        libc::c_uint = 1 << 0;	/* io_context is polled */
-pub const IORING_SETUP_SQPOLL:	        libc::c_uint = 1 << 1;	/* SQ poll thread */
-pub const IORING_SETUP_SQ_AFF:	        libc::c_uint = 1 << 2;	/* sq_thread_cpu is valid */
-pub const IORING_SETUP_CQSIZE:	        libc::c_uint = 1 << 3;    /* app defines CQ size */
+pub const IORING_SETUP_IOPOLL:	        libc::c_uint = 1 << 0; /* io_context is polled */
+pub const IORING_SETUP_SQPOLL:	        libc::c_uint = 1 << 1; /* SQ poll thread */
+pub const IORING_SETUP_SQ_AFF:	        libc::c_uint = 1 << 2; /* sq_thread_cpu is valid */
+pub const IORING_SETUP_CQSIZE:	        libc::c_uint = 1 << 3; /* app defines CQ size */
+pub const IORING_SETUP_CLAMP: 	        libc::c_uint = 1 << 4; /* clamp SQ/CQ ring sizes */
+pub const IORING_SETUP_ATTACH_WQ:       libc::c_uint = 1 << 5; /* attach to existing wq */
+
+// cqe.flags
+pub const IORING_CQE_BUFFER_SHIFT:      libc::c_uint = 1 << 0;
 
 // Magic offsets for the application to mmap the data it needs
 pub const IORING_OFF_SQ_RING:           libc::__u64 = 0;
@@ -66,6 +86,9 @@ pub const IORING_ENTER_SQ_WAKEUP:       libc::c_uint = 1 << 1;
 pub const IORING_FEAT_SINGLE_MMAP:      libc::__u32 = 1 << 0;
 pub const IORING_FEAT_NODROP:           libc::__u32 = 1 << 1;
 pub const IORING_FEAT_SUBMIT_STABLE:    libc::__u32 = 1 << 2;
+pub const IORING_FEAT_RW_CUR_POS:       libc::__u32 = 1 << 3;
+pub const IORING_FEAT_CUR_PERSONALITY:  libc::__u32 = 1 << 4;
+pub const IORING_FEAT_FAST_POLL:        libc::__u32 = 1 << 5;
 
 // io_uring_register opcodes and arguments
 pub const IORING_REGISTER_BUFFERS:      libc::c_uint = 0;
@@ -75,6 +98,10 @@ pub const IORING_UNREGISTER_FILES:      libc::c_uint = 3;
 pub const IORING_REGISTER_EVENTFD:      libc::c_uint = 4;
 pub const IORING_UNREGISTER_EVENTFD:    libc::c_uint = 5;
 pub const IORING_REGISTER_FILES_UPDATE: libc::c_uint = 6;
+pub const IORING_REGISTER_EVENTFD_ASYNC:libc::c_uint = 7;
+pub const IORING_REGISTER_PROBE:        libc::c_uint = 8;
+pub const IORING_REGISTER_PERSONALITY:  libc::c_uint = 9;
+pub const IORING_UNREGISTER_PERSONALITY:libc::c_uint = 10;
 
 #[repr(C)]
 pub struct io_uring {
@@ -113,7 +140,7 @@ pub struct io_uring_sqe {
     pub len: libc::__u32,       /* buffer size or number of iovecs */
     pub cmd_flags: cmd_flags,
     pub user_data: libc::__u64, /* data to be passed back at completion time */
-    pub buf_index: buf_index,   /* index into fixed buffers, if used */
+    pub buf_index: buf_index_padding,   /* index into fixed buffers, if used */
 }
 
 #[repr(C)]
@@ -134,15 +161,25 @@ pub union cmd_flags {
     pub cancel_flags: libc::__u32,
     pub open_flags: libc::__u32,
     pub statx_flags: libc::__u32,
+    pub fadvise_advice: libc::__u32,
+    pub splice_flags: libc::__u32,
 }
 
 #[allow(non_camel_case_types)]
 type __kernel_rwf_t = libc::c_int;
 
 #[repr(C)]
-pub union buf_index {
-    pub buf_index: libc::__u16,
+pub union buf_index_padding {
+    pub buf_index: buf_index,
     pub __pad2: [libc::__u64; 3],
+}
+
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct buf_index {
+    pub index_or_group: libc::__u16,
+    pub personality: libc::__u16,
+    pub splice_fd_in: libc::__s32,
 }
 
 #[repr(C)]
@@ -202,6 +239,22 @@ pub struct io_cqring_offsets {
     pub resv: [libc::__u64; 2],
 }
 
+#[repr(C)]
+pub struct io_uring_probe {
+    last_op: libc::__u8,
+    ops_len: libc::__u8,
+    resv: libc::__u16,
+    resv2: [libc::__u32; 3],
+    ops: [io_uring_probe_op; 0],
+}
+
+#[repr(C)]
+pub struct io_uring_probe_op {
+    op: libc::__u8,
+    resv: libc::__u8,
+    flags: libc::__u16,
+    resv2: libc::__u32,
+}
 
 #[repr(C)]
 pub struct __kernel_timespec {
@@ -228,6 +281,12 @@ extern {
         params: *mut io_uring_params,
         ring: *mut io_uring,
     ) -> libc::c_int;
+
+    pub fn io_uring_get_probe_ring(ring: *mut io_uring) -> *mut io_uring_probe;
+
+    pub fn io_uring_get_probe() -> *mut io_uring_probe;
+
+    pub fn io_uring_dontfork(ring: *mut io_uring) -> libc::c_int;
 
     pub fn io_uring_queue_exit(ring: *mut io_uring);
 
@@ -283,10 +342,23 @@ extern {
     pub fn io_uring_register_eventfd(ring: *mut io_uring, fd: libc::c_int) -> libc::c_int;
 
     pub fn io_uring_unregister_eventfd(ring: *mut io_uring) -> libc::c_int;
+
+    pub fn io_uring_register_probe(
+        ring: *mut io_uring,
+        p: *mut io_uring_probe,
+        nr: libc::c_uint
+    ) -> libc::c_int;
+
+    pub fn io_uring_register_personality(ring: *mut io_uring) -> libc::c_int;
+
+    pub fn io_uring_unregister_personality(ring: *mut io_uring, id: libc::c_int);
 }
 
 #[link(name = "rusturing")]
 extern {
+    #[link_name = "rust_io_uring_opcode_supported"]
+    pub fn io_uring_opcode_supported(p: *mut io_uring_probe, op: libc::c_int) -> libc::c_int;
+
     #[link_name = "rust_io_uring_cq_advance"]
     pub fn io_uring_cq_advance(ring: *mut io_uring, nr: libc::c_uint);
 

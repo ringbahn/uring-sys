@@ -1,5 +1,10 @@
 #include "liburing.h"
 
+extern inline int rust_io_uring_opcode_supported(struct io_uring_probe *p, int op)
+{
+    return io_uring_opcode_supported(p, op);
+}
+
 extern inline void rust_io_uring_cq_advance(struct io_uring *ring, unsigned nr)
 {
     io_uring_cq_advance(ring, nr);
