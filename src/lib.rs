@@ -294,7 +294,7 @@ extern {
         ring: *mut io_uring,
         cqes: *mut *mut io_uring_cqe,
         count: libc::c_uint
-    ) -> libc::c_uint;
+    ) -> libc::c_int;
 
     pub fn io_uring_wait_cqes(
         ring: *mut io_uring,
