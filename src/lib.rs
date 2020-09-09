@@ -302,6 +302,8 @@ extern {
 
     pub fn io_uring_get_probe() -> *mut io_uring_probe;
 
+    pub fn io_uring_free_probe(probe: *mut io_uring_probe);
+
     pub fn io_uring_dontfork(ring: *mut io_uring) -> libc::c_int;
 
     pub fn io_uring_queue_exit(ring: *mut io_uring);
