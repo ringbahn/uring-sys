@@ -6,6 +6,7 @@ pub const LIBURING_UDATA_TIMEOUT: libc::__u64 = libc::__u64::max_value();
 #[repr(C)]
 #[non_exhaustive]
 #[allow(nonstandard_style)]
+#[derive(Debug)]
 pub enum IoRingOp {
     IORING_OP_NOP,
     IORING_OP_READV,
