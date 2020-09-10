@@ -653,6 +653,12 @@ extern {
         wait_nr: libc::c_uint,
     ) -> libc::c_int;
 
+    #[link_name = "rust_io_uring_cq_eventfd_enabled"]
+    pub fn io_uring_eventfd_enabled(ring: *mut io_uring) -> bool;
+
+    #[link_name = "rust_io_uring_cq_eventfd_toggle"]
+    pub fn io_uring_eventfd_toggle(ring: *mut io_uring, enabled: bool) -> libc::c_int;
+
     #[link_name = "rust_io_uring_peek_cqe"]
     pub fn io_uring_peek_cqe(ring: *mut io_uring, cqe_ptr: *mut *mut io_uring_cqe) -> libc::c_int;
 
