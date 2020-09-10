@@ -286,6 +286,16 @@ extern inline unsigned rust_io_uring_cq_ready(struct io_uring *ring)
     return io_uring_cq_ready(ring);
 }
 
+extern inline bool rust_io_uring_cq_eventfd_enabled(struct io_uring *ring)
+{
+    return io_uring_cq_eventfd_enabled(ring);
+}
+
+extern inline int rust_io_uring_cq_eventfd_toggle(struct io_uring *ring, bool enabled)
+{
+    return io_uring_cq_eventfd_toggle(ring, enabled);
+}
+
 extern inline int rust_io_uring_wait_cqe_nr(struct io_uring *ring,
                                             struct io_uring_cqe **cqe_ptr,
                                             unsigned wait_nr)
