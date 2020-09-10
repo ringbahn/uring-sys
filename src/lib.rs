@@ -41,6 +41,7 @@ pub enum IoRingOp {
     IORING_OP_SPLICE,
     IORING_OP_PROVIDE_BUFFERS,
     IORING_OP_REMOVE_BUFFERS,
+    IORING_OP_TEE,
 }
 
 // sqe.flags
@@ -58,7 +59,7 @@ pub const IORING_FSYNC_DATASYNC:        libc::__u32 = 1 << 0;
 pub const IORING_TIMEOUT_ABS:           libc::__u32 = 1 << 0;
 
 // sqe.cmd_flags.splice_flags
-pub const SPLICE_F_FD_IN_FXIED:         libc::__u32 = 1 << 31;
+pub const SPLICE_F_FD_IN_FIXED:         libc::__u32 = 1 << 31;
 
 // io_uring_setup flags
 pub const IORING_SETUP_IOPOLL:	        libc::c_uint = 1 << 0; /* io_context is polled */
@@ -78,6 +79,10 @@ pub const IORING_OFF_SQES:              libc::__u64 = 0x10000000;
 
 // sq_ring.kflags
 pub const IORING_SQ_NEED_WAKEUP:        libc::c_uint = 1 << 0;
+pub const IORING_SQ_CQ_OVERFLOW:        libc::c_uint = 1 << 1;
+
+// cq_ring.kflags
+pub const IORING_CQ_EVENTFD_DISABLED:   libc::c_uint = 1 << 0;
 
 // io_uring_enter flags
 pub const IORING_ENTER_GETEVENTS:       libc::c_uint = 1 << 0;
@@ -90,6 +95,7 @@ pub const IORING_FEAT_SUBMIT_STABLE:    libc::__u32 = 1 << 2;
 pub const IORING_FEAT_RW_CUR_POS:       libc::__u32 = 1 << 3;
 pub const IORING_FEAT_CUR_PERSONALITY:  libc::__u32 = 1 << 4;
 pub const IORING_FEAT_FAST_POLL:        libc::__u32 = 1 << 5;
+pub const IORING_FEAT_POLL_32BITS:      libc::__u32 = 1 << 6;
 
 // io_uring_register opcodes and arguments
 pub const IORING_REGISTER_BUFFERS:      libc::c_uint = 0;
@@ -211,7 +217,8 @@ pub struct io_uring_params {
     pub sq_thread_cpu: libc::__u32,
     pub sq_thread_idle: libc::__u32,
     pub features: libc::__u32,
-    pub resv: [libc::__u32; 4],
+    pub wq_fd: libc::__u32,
+    pub resv: [libc::__u32; 3],
     pub sq_off: io_sqring_offsets,
     pub cq_off: io_cqring_offsets,
 }
