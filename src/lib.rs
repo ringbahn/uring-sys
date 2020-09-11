@@ -110,6 +110,7 @@ pub const IORING_REGISTER_PROBE:        libc::c_uint = 8;
 pub const IORING_REGISTER_PERSONALITY:  libc::c_uint = 9;
 pub const IORING_UNREGISTER_PERSONALITY:libc::c_uint = 10;
 
+#[derive(Debug)]
 #[repr(C)]
 pub struct io_uring {
     pub sq: io_uring_sq,
@@ -118,6 +119,7 @@ pub struct io_uring {
     pub ring_fd: libc::c_int,
 }
 
+#[derive(Debug)]
 #[repr(C)]
 pub struct io_uring_sq {
     pub khead: *mut libc::c_uint,
@@ -131,6 +133,21 @@ pub struct io_uring_sq {
 
     pub sqe_head: libc::c_uint,
     pub sqe_tail: libc::c_uint,
+
+    pub ring_sz: libc::size_t,
+    pub ring_ptr: *mut libc::c_void,
+}
+
+#[derive(Debug)]
+#[repr(C)]
+pub struct io_uring_cq {
+    pub khead: *mut libc::c_uint,
+    pub ktail: *mut libc::c_uint,
+    pub kring_mask: *mut libc::c_uint,
+    pub kring_entries: *mut libc::c_uint,
+    pub kflags: *mut libc::c_uint,
+    pub koverflow: *mut libc::c_uint,
+    pub cqes: *mut io_uring_cqe,
 
     pub ring_sz: libc::size_t,
     pub ring_ptr: *mut libc::c_void,
@@ -187,19 +204,6 @@ pub struct buf_index {
     pub index_or_group: libc::__u16,
     pub personality: libc::__u16,
     pub splice_fd_in: libc::__s32,
-}
-
-#[repr(C)]
-pub struct io_uring_cq {
-    pub khead: *mut libc::c_uint,
-    pub ktail: *mut libc::c_uint,
-    pub kring_mask: *mut libc::c_uint,
-    pub kring_entries: *mut libc::c_uint,
-    pub koverflow: *mut libc::c_uint,
-    pub cqes: *mut io_uring_cqe,
-
-    pub ring_sz: libc::size_t,
-    pub ring_ptr: *mut libc::c_void,
 }
 
 #[repr(C)]
