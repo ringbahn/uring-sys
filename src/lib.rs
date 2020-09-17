@@ -365,7 +365,7 @@ extern {
 
     pub fn io_uring_register_personality(ring: *mut io_uring) -> libc::c_int;
 
-    pub fn io_uring_unregister_personality(ring: *mut io_uring, id: libc::c_int);
+    pub fn io_uring_unregister_personality(ring: *mut io_uring, id: libc::c_int) -> libc::c_int;
 }
 
 #[link(name = "rusturing")]
