@@ -353,6 +353,8 @@ extern {
 
     pub fn io_uring_register_eventfd(ring: *mut io_uring, fd: libc::c_int) -> libc::c_int;
 
+    pub fn io_uring_register_eventfd_async(ring: *mut io_uring, fd: libc::c_int) -> libc::c_int;
+
     pub fn io_uring_unregister_eventfd(ring: *mut io_uring) -> libc::c_int;
 
     pub fn io_uring_register_probe(
