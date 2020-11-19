@@ -46,7 +46,7 @@ extern inline void rust_io_uring_prep_splice(struct io_uring_sqe *sqe,
 					unsigned int nbytes,
 					unsigned int splice_flags)
 {
-    io_uring_prep_splice(sqe, fd_in, fd_out, off_in, off_out, nbytes, splice_flags);
+    io_uring_prep_splice(sqe, fd_in, off_in, fd_out, off_out, nbytes, splice_flags);
 }
 
 extern inline void rust_io_uring_prep_readv(struct io_uring_sqe *sqe,
