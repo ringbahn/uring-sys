@@ -285,6 +285,19 @@ extern inline void rust_io_uring_prep_shutdown(struct io_uring_sqe *sqe, int fd,
 	io_uring_prep_shutdown(sqe, fd, how);
 }
 
+extern inline void rust_io_uring_prep_unlinkat(struct io_uring_sqe *sqe, int dfd,
+					  const char *path, int flags)
+{
+    io_uring_prep_unlinkat(sqe, dfd, path, flags);
+}
+
+extern inline void rust_io_uring_prep_renameat(struct io_uring_sqe *sqe, int olddfd,
+					  const char *oldpath, int newdfd,
+					  const char *newpath, int flags)
+{
+    io_uring_prep_renameat(sqe, olddfd, oldpath, newdfd, newpath, flags);
+}
+
 extern inline unsigned rust_io_uring_sq_ready(struct io_uring *ring)
 {
     return io_uring_sq_ready(ring);
