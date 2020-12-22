@@ -42,6 +42,7 @@ pub enum IoRingOp {
     IORING_OP_PROVIDE_BUFFERS,
     IORING_OP_REMOVE_BUFFERS,
     IORING_OP_TEE,
+    IORING_OP_SHUTDOWN,
 }
 
 // sqe.flags
@@ -658,6 +659,13 @@ extern {
         sqe: *mut io_uring_sqe,
         nr: libc::c_int,
         bgid: libc::c_int
+    );
+
+    #[link_name = "rust_io_uring_prep_shutdown"]
+    pub fn io_uring_prep_shutdown(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        how: libc::c_int
     );
 
     #[link_name = "rust_io_uring_sq_ready"]

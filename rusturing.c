@@ -279,6 +279,12 @@ extern inline void rust_io_uring_prep_remove_buffers(struct io_uring_sqe *sqe,
     io_uring_prep_remove_buffers(sqe, nr, bgid);
 }
 
+extern inline void rust_io_uring_prep_shutdown(struct io_uring_sqe *sqe, int fd,
+					  int how)
+{
+	io_uring_prep_shutdown(sqe, fd, how);
+}
+
 extern inline unsigned rust_io_uring_sq_ready(struct io_uring *ring)
 {
     return io_uring_sq_ready(ring);
