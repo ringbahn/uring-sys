@@ -409,6 +409,15 @@ extern {
         splice_flags: libc::c_uint,
     );
 
+    #[link_name = "rust_io_uring_prep_tee"]
+    pub fn io_uring_prep_tee(
+        sqe: *mut io_uring_sqe,
+        fd_in: libc::c_int,
+        fd_out: libc::c_int,
+        nbytes: libc::c_uint,
+        splice_flags: libc::c_uint,
+    );
+
     #[link_name = "rust_io_uring_prep_readv"]
     pub fn io_uring_prep_readv(
         sqe: *mut io_uring_sqe,
