@@ -49,6 +49,14 @@ extern inline void rust_io_uring_prep_splice(struct io_uring_sqe *sqe,
     io_uring_prep_splice(sqe, fd_in, fd_out, off_in, off_out, nbytes, splice_flags);
 }
 
+extern inline void rust_io_uring_prep_tee(struct io_uring_sqe *sqe,
+				     int fd_in, int fd_out,
+				     unsigned int nbytes,
+				     unsigned int splice_flags)
+{
+    io_uring_prep_tee(sqe, fd_in, fd_out, nbytes, splice_flags);
+}
+
 extern inline void rust_io_uring_prep_readv(struct io_uring_sqe *sqe,
                                             int fd,
                                             const struct iovec *iovecs,
@@ -269,6 +277,25 @@ extern inline void rust_io_uring_prep_remove_buffers(struct io_uring_sqe *sqe,
 						int nr, int bgid)
 {
     io_uring_prep_remove_buffers(sqe, nr, bgid);
+}
+
+extern inline void rust_io_uring_prep_shutdown(struct io_uring_sqe *sqe, int fd,
+					  int how)
+{
+	io_uring_prep_shutdown(sqe, fd, how);
+}
+
+extern inline void rust_io_uring_prep_unlinkat(struct io_uring_sqe *sqe, int dfd,
+					  const char *path, int flags)
+{
+    io_uring_prep_unlinkat(sqe, dfd, path, flags);
+}
+
+extern inline void rust_io_uring_prep_renameat(struct io_uring_sqe *sqe, int olddfd,
+					  const char *oldpath, int newdfd,
+					  const char *newpath, int flags)
+{
+    io_uring_prep_renameat(sqe, olddfd, oldpath, newdfd, newpath, flags);
 }
 
 extern inline unsigned rust_io_uring_sq_ready(struct io_uring *ring)

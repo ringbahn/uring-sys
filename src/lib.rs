@@ -42,6 +42,9 @@ pub enum IoRingOp {
     IORING_OP_PROVIDE_BUFFERS,
     IORING_OP_REMOVE_BUFFERS,
     IORING_OP_TEE,
+    IORING_OP_SHUTDOWN,
+    IORING_OP_RENAMEAT,
+    IORING_OP_UNLINKAT,
 }
 
 // sqe.flags
@@ -187,6 +190,8 @@ pub union cmd_flags {
     pub statx_flags: libc::__u32,
     pub fadvise_advice: libc::__u32,
     pub splice_flags: libc::__u32,
+    pub rename_flags: libc::__u32,
+    pub unlink_flags: libc::__u32,
 }
 
 #[allow(non_camel_case_types)]
@@ -405,6 +410,15 @@ extern {
         off_in: libc::loff_t,
         fd_out: libc::c_int,
         off_out: libc::loff_t,
+        nbytes: libc::c_uint,
+        splice_flags: libc::c_uint,
+    );
+
+    #[link_name = "rust_io_uring_prep_tee"]
+    pub fn io_uring_prep_tee(
+        sqe: *mut io_uring_sqe,
+        fd_in: libc::c_int,
+        fd_out: libc::c_int,
         nbytes: libc::c_uint,
         splice_flags: libc::c_uint,
     );
@@ -649,6 +663,31 @@ extern {
         sqe: *mut io_uring_sqe,
         nr: libc::c_int,
         bgid: libc::c_int
+    );
+
+    #[link_name = "rust_io_uring_prep_shutdown"]
+    pub fn io_uring_prep_shutdown(
+        sqe: *mut io_uring_sqe,
+        fd: libc::c_int,
+        how: libc::c_int
+    );
+
+    #[link_name = "rust_io_uring_prep_unlinkat"]
+    pub fn io_uring_prep_unlinkat(
+        sqe: *mut io_uring_sqe,
+        dfd: libc::c_int,
+        path: *const libc::c_char,
+        flags: libc::c_int,
+    );
+
+    #[link_name = "rust_io_uring_prep_renameat"]
+    pub fn io_uring_prep_renameat(
+        sqe: *mut io_uring_sqe,
+        olddfd: libc::c_int,
+        oldpath: *const libc::c_char,
+        newdfd: libc::c_int,
+        newpath: *const libc::c_char,
+        flags: libc::c_int,
     );
 
     #[link_name = "rust_io_uring_sq_ready"]
