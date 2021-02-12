@@ -117,6 +117,9 @@ pub struct io_uring {
     pub cq: io_uring_cq,
     pub flags: libc::c_uint,
     pub ring_fd: libc::c_int,
+
+    pub features: libc::c_uint,
+    pub pad: [libc::c_uint; 3],
 }
 
 #[derive(Debug)]
