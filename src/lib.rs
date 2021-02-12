@@ -117,6 +117,9 @@ pub struct io_uring {
     pub cq: io_uring_cq,
     pub flags: libc::c_uint,
     pub ring_fd: libc::c_int,
+
+    pub features: libc::c_uint,
+    pub pad: [libc::c_uint; 3],
 }
 
 #[derive(Debug)]
@@ -136,6 +139,8 @@ pub struct io_uring_sq {
 
     pub ring_sz: libc::size_t,
     pub ring_ptr: *mut libc::c_void,
+
+    pub pad: [libc::c_uint; 4],
 }
 
 #[derive(Debug)]
@@ -151,6 +156,8 @@ pub struct io_uring_cq {
 
     pub ring_sz: libc::size_t,
     pub ring_ptr: *mut libc::c_void,
+
+    pub pad: [libc::c_uint; 4],
 }
 
 #[repr(C)]
@@ -297,6 +304,8 @@ extern {
     pub fn io_uring_get_probe_ring(ring: *mut io_uring) -> *mut io_uring_probe;
 
     pub fn io_uring_get_probe() -> *mut io_uring_probe;
+
+    pub fn io_uring_free_probe(probe: *mut io_uring_probe);
 
     pub fn io_uring_dontfork(ring: *mut io_uring) -> libc::c_int;
 
