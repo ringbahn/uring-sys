@@ -136,6 +136,8 @@ pub struct io_uring_sq {
 
     pub ring_sz: libc::size_t,
     pub ring_ptr: *mut libc::c_void,
+
+    pub pad: [libc::c_uint; 4],
 }
 
 #[derive(Debug)]
@@ -151,6 +153,8 @@ pub struct io_uring_cq {
 
     pub ring_sz: libc::size_t,
     pub ring_ptr: *mut libc::c_void,
+
+    pub pad: [libc::c_uint; 4],
 }
 
 #[repr(C)]
